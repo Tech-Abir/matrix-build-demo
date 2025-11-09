@@ -1,0 +1,35 @@
+name: Multi-Platform Matrix Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node-version: [14, 16, 18]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: matrix-c63a290
+        run: echo "Building on ${{ matrix.os }} with Node.js ${{ matrix.node-version }}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Generate build artifact
+        run: echo "Build output for ${{ matrix.os }} Node.js ${{ matrix.node-version }}" > output.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-c63a290-${{ matrix.os }}-v${{ matrix.node-version }}
+          path: output.txt
