@@ -11,23 +11,47 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        node-version: [14, 16, 18]
+        include:
+          # Ubuntu jobs
+          - os: ubuntu-latest
+            node-version: 14
+          - os: ubuntu-latest
+            node-version: 16
+          - os: ubuntu-latest
+            node-version: 18
+          # macOS jobs (skip Node 14)
+          - os: macos-latest
+            node-version: 16
+          - os: macos-latest
+            node-version: 18
+          # Windows jobs
+          - os: windows-latest
+            node-version: 14
+          - os: windows-latest
+            node-version: 16
+          - os: windows-latest
+            node-version: 18
+
     steps:
+      # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Step with matrix identifier
       - name: matrix-c63a290
         run: echo "Building on ${{ matrix.os }} with Node.js ${{ matrix.node-version }}"
 
+      # Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
+      # Generate a build artifact (example text file)
       - name: Generate build artifact
         run: echo "Build output for ${{ matrix.os }} Node.js ${{ matrix.node-version }}" > output.txt
 
+      # Upload the artifact
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
